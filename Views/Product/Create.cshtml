@@ -1,0 +1,90 @@
+﻿@model ProductManagement.Models.Product
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<h1>Create Product</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label">Price ($)</label>
+                <input asp-for="Price" class="form-control" type="number" step="1" id="Price" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DiscountPercent" class="control-label">Discount Percent</label>
+                <input asp-for="DiscountPercent" class="form-control" type="number" step="1" id="DiscountPercent" />
+                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiscountPrice" class="control-label">Discount Price</label>
+                <input asp-for="DiscountPrice" class="form-control" id="DiscountPrice" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label">Category</label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImagePath" class="control-label">Upload Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function calculateDiscountPrice() {
+            let price = parseFloat(document.getElementById("Price").value) || 0;
+            let discountPercent = parseFloat(document.getElementById("DiscountPercent").value) || 0;
+
+            if (discountPercent > 100) {
+                alert("Discount cannot exceed 100%");
+                document.getElementById("DiscountPercent").value = 100;
+                discountPercent = 100;
+            }
+
+            let discountPrice = price - (price * discountPercent / 100);
+            document.getElementById("DiscountPrice").value = discountPrice.toFixed(2);
+        }
+
+        document.getElementById("Price").addEventListener("input", calculateDiscountPrice);
+        document.getElementById("DiscountPercent").addEventListener("input", calculateDiscountPrice);
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let fileInput = document.querySelector("input[type='file']");
+            if (fileInput.files.length === 0) {
+                alert("Please upload an image before submitting!");
+                event.preventDefault(); // Ngăn form gửi đi
+            }
+        });
+    </script>
+}

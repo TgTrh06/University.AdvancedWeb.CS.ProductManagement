@@ -1,0 +1,123 @@
+﻿@model List<ProductManagement.Models.Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">New Products</h2>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="product-card">
+                    <div class="image-container">
+                        @if (product.DiscountPercent > 0)
+                        {
+                            <span class="discount-badge">-@product.DiscountPercent%</span>
+                        }
+                        <img src="@product.ImagePath" class="product-image" alt="@product.Name">
+                        <a href="#" class="btn btn-primary add-to-cart">Add to Cart</a>
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">@product.Name</h5>
+                        <p class="price">
+                            <span class="text-danger">$@product.DiscountPrice</span>
+                            @if (product.DiscountPercent > 0)
+                            {
+                                <span class="text-muted text-decoration-line-through">$@product.Price</span>
+                            }
+                        </p>
+                        <p class="category">@product.Category.Name</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Định dạng thẻ chứa sản phẩm */
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: 0.3s;
+        width: 100%;
+        height: 370px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .product-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Vùng chứa ảnh sản phẩm */
+    .image-container {
+        position: relative;
+        width: 100%;
+        height: 220px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* Định dạng ảnh sản phẩm */
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* Badge hiển thị giảm giá */
+    .discount-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: red;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    /* Nút "Add to Cart" mặc định ẩn */
+    .add-to-cart {
+        position: absolute;
+        bottom: -40px; /* Ẩn đi ban đầu */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: 0.3s ease-in-out;
+    }
+
+    /* Hiển thị "Add to Cart" khi hover vào thẻ chứa ảnh */
+    .image-container:hover .add-to-cart {
+        bottom: 10px;
+    }
+
+    /* Định dạng vùng chứa thông tin sản phẩm */
+    .product-info {
+        padding: 15px;
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .product-title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+</style>

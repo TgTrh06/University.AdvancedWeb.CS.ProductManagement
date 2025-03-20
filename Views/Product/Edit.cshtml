@@ -1,0 +1,91 @@
+﻿@model ProductManagement.Models.Product
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<h1>Edit Product</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label">Original Price</label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" id="priceInput" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DiscountPercent" class="control-label">Discount Percent</label>
+                <input asp-for="DiscountPercent" class="form-control" type="number" step="0.01" id="discountInput" />
+                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Discounted Price</label>
+                <input id="discountPrice" class="form-control" type="number" step="0.01" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <div class="form-group">
+                    <label>Current Image</label>
+                    <br />
+                    <img src="@Model.ImagePath" width="150" alt="Current Image" />
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="ImagePath" class="control-label">Upload New Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function calculateDiscountedPrice() {
+            let price = parseFloat(document.getElementById("priceInput").value) || 0;
+            let discount = parseFloat(document.getElementById("discountInput").value) || 0;
+            let discountedPrice = price - (price * discount / 100);
+            document.getElementById("discountPrice").value = discountedPrice.toFixed(2);
+        }
+
+        document.getElementById("priceInput").addEventListener("input", calculateDiscountedPrice);
+        document.getElementById("discountInput").addEventListener("input", calculateDiscountedPrice);
+
+        window.onload = calculateDiscountedPrice;
+    </script>
+}
